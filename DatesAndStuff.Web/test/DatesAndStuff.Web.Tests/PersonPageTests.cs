@@ -127,6 +127,40 @@ public class PersonPageTests
 
         salaryAfterSubmission.Should().BeApproximately(expectedSalary, 0.001);
     }
+
+    [TestCase("-11")]
+    public void Person_SalaryIncrease_UnderMinusTen_ShouldShowErrors(string invalidPercentage)
+    {
+        driver.Navigate().GoToUrl(BaseURL);
+        var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10)); // Növeljük 10-re a türelmi időt
+
+        // Kattintsunk a navigációra
+        wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//*[@data-test='PersonPageNavigation']"))).Click();
+
+        // Megkeressük az inputot, kitöröljük, beírjuk az értéket
+        var input = wait.Until(ExpectedConditions.ElementExists(By.XPath("//*[@data-test='SalaryIncreasePercentageInput']")));
+        input.Clear();
+        input.SendKeys(invalidPercentage);
+
+        // Kattintunk a gombra
+        var submitButton = wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//*[@data-test='SalaryIncreaseSubmitButton']")));
+        submitButton.Click();
+
+        // --- Itt jön a kritikus rész ---
+        // Ellenőrizzük, hogy láthatóvá válik-e a hibaüzenet
+        try
+        {
+            var fieldError = wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//*[@data-test='SalaryIncreaseFieldError']")));
+            fieldError.Text.Should().NotBeNullOrEmpty();
+            Console.WriteLine("Siker! A hibaüzenet megjelent: " + fieldError.Text);
+        }
+        catch (WebDriverTimeoutException)
+        {
+            Assert.Fail("A hibaüzenet nem jelent meg 10 másodperc után sem, pedig rossz értéket adtunk meg!");
+        }
+    }
+
+
     private bool IsElementPresent(By by)
     {
         try
