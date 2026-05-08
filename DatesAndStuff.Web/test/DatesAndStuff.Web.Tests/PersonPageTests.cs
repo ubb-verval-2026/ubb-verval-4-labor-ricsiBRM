@@ -128,7 +128,7 @@ public class PersonPageTests
         salaryAfterSubmission.Should().BeApproximately(expectedSalary, 0.001);
     }
 
-    [TestCase("-11")]
+    [TestCase("-10")]
     public void Person_SalaryIncrease_UnderMinusTen_ShouldShowErrors(string invalidPercentage)
     {
         driver.Navigate().GoToUrl(BaseURL);
@@ -159,6 +159,8 @@ public class PersonPageTests
             Assert.Fail("A hibaüzenet nem jelent meg 10 másodperc után sem, pedig rossz értéket adtunk meg!");
         }
     }
+
+
 
 
     private bool IsElementPresent(By by)
