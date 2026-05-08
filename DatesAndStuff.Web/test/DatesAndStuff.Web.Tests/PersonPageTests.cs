@@ -144,6 +144,12 @@ public class PersonPageTests
 
         // Kattintunk a gombra
         var submitButton = wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//*[@data-test='SalaryIncreaseSubmitButton']")));
+
+        if (invalidPercentage == "-10" && submitButton.Enabled)
+        {
+            Console.WriteLine("Inkonzisztencia: A gomb aktív -10-nél, pedig a backend tiltja!");
+        }
+
         submitButton.Click();
 
         // --- Itt jön a kritikus rész ---
