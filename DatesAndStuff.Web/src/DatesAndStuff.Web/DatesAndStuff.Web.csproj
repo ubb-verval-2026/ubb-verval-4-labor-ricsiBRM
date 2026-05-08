@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Blazor.Bootstrap" Version="3.4.0" />
+    <PackageReference Include="Selenium.Support" Version="4.43.0" />
   </ItemGroup>
 
   <ItemGroup>

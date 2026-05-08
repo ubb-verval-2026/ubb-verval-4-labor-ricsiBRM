@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Selenium.Support" Version="4.43.0" />
+  </ItemGroup>
+
 </Project>

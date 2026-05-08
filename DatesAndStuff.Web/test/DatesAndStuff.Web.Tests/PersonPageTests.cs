@@ -132,17 +132,14 @@ public class PersonPageTests
     public void Person_SalaryIncrease_UnderMinusTen_ShouldShowErrors(string invalidPercentage)
     {
         driver.Navigate().GoToUrl(BaseURL);
-        var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10)); // Növeljük 10-re a türelmi időt
+        var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10)); 
 
-        // Kattintsunk a navigációra
         wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//*[@data-test='PersonPageNavigation']"))).Click();
 
-        // Megkeressük az inputot, kitöröljük, beírjuk az értéket
         var input = wait.Until(ExpectedConditions.ElementExists(By.XPath("//*[@data-test='SalaryIncreasePercentageInput']")));
         input.Clear();
         input.SendKeys(invalidPercentage);
 
-        // Kattintunk a gombra
         var submitButton = wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//*[@data-test='SalaryIncreaseSubmitButton']")));
 
         if (invalidPercentage == "-10" && submitButton.Enabled)
@@ -152,8 +149,6 @@ public class PersonPageTests
 
         submitButton.Click();
 
-        // --- Itt jön a kritikus rész ---
-        // Ellenőrizzük, hogy láthatóvá válik-e a hibaüzenet
         try
         {
             var fieldError = wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//*[@data-test='SalaryIncreaseFieldError']")));
@@ -164,6 +159,36 @@ public class PersonPageTests
         {
             Assert.Fail("A hibaüzenet nem jelent meg 10 másodperc után sem, pedig rossz értéket adtunk meg!");
         }
+    }
+
+
+    [Test]
+    public void BlazeDemo_MexicoCityToDublin_ShouldHaveAtLeastThreeFlights()
+    {
+        // Arrange
+        driver.Navigate().GoToUrl("https://blazedemo.com");
+        var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(5));
+
+        var departureSelect = new SelectElement(driver.FindElement(By.Name("fromPort")));
+        departureSelect.SelectByValue("Mexico City");
+
+        var destinationSelect = new SelectElement(driver.FindElement(By.Name("toPort")));
+        destinationSelect.SelectByValue("Dublin");
+
+        // Act
+        driver.FindElement(By.CssSelector("input[type='submit']")).Click();
+
+        wait.Until(ExpectedConditions.ElementIsVisible(By.TagName("table")));
+
+        // Assert
+        var flightRows = driver.FindElements(By.XPath("//table[@class='table']/tbody/tr"));
+
+        int flightCount = flightRows.Count;
+
+        flightCount.Should().BeGreaterThanOrEqualTo(3,
+            $"Mivel Mexico City és Dublin között legalább 3 járatot vártunk, de csak {flightCount} található.");
+
+        Console.WriteLine($"Sikeres teszt: {flightCount} járatot találtunk.");
     }
 
 
